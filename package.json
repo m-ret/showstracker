@@ -22,6 +22,9 @@
   },
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-angular-filesort": "^1.1.1",
+    "gulp-inject": "^4.0.0",
+    "gulp-natural-sort": "^0.1.1",
     "gulp-plumber": "^1.1.0",
     "gulp-sass": "^2.3.1"
   }
