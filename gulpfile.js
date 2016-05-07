@@ -1,9 +1,8 @@
 var gulp = require('gulp');
 var sass = require('gulp-sass');
 var plumber = require('gulp-plumber');
-// var angularFilesort = require('gulp-angular-filesort');
-// var naturalSort = require('gulp-natural-sort');
-// var inject = require('gulp-inject');
+var browserSync = require('browser-sync').create();
+var jslint = require('gulp-jslint');
 
 gulp.task('sass', function() {
   gulp.src('public/stylesheets/style.scss')
@@ -12,22 +11,33 @@ gulp.task('sass', function() {
     .pipe(gulp.dest('public/stylesheets'));
 });
 
-gulp.task('watch', function() {
-  gulp.watch('public/stylesheets/*.scss', ['sass']);
-});
-
-// gulp.task('index', function () {
-//   var target = gulp.src('./public/index.html');
-//   // It's not necessary to read the files (will speed up things), we're only after their paths:
-//   var sources = gulp.src(
-//       ['./**/*.js', './**/*.css'],
-//       {
-//         cwd: __dirname + "/public/",
-//       }
-//     );
-
-//   return target.pipe(inject(sources, { addRootSlash: false }))
-//     .pipe(gulp.dest('./public'));
+// gulp.task('jslint', function () {
+//     return gulp.src(['public/*/*'])
+//             .pipe(jslint({  // this object represents the JSLint directives being passed down  }))
+//             .pipe(jslint.reporter( 'default' ));
 // });
 
-gulp.task('default', ['sass', 'watch']);
+// Static Server + watching scss/html files
+gulp.task('serve', ['sass'], function() {
+  browserSync.init({
+      server: "./public"
+  });
+});
+
+gulp.task('watch', function() {
+	var reload = browserSync.reload;
+	gulp.watch("public/stylesheets/*.scss", ['sass']);
+	gulp.watch("public/*/*.js", ['scripts']);
+	gulp.watch("*.js").on('change', reload);
+	gulp.watch("public/*.html").on('change', reload);
+	gulp.watch("public/*.js").on('change', reload);
+	gulp.watch("public/*/*.js").on('change', reload);
+	gulp.watch("public/*/*.css").on('change', reload);
+	gulp.watch("public/*/*.scss").on('change', reload);
+
+	// gulp.src(["public/*.html"], {
+	//   base: 'public'
+	// }).pipe(gulp.dest("build/"));
+});
+
+gulp.task('default', ['sass', 'serve', 'watch']); // 'jslint'
